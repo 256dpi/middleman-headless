@@ -6,6 +6,7 @@ module MiddlemanHeadless
   class Extension < ::Middleman::Extension
     option :address, 'http://0.0.0.0:3000', 'The Headless address'
     option :token, nil, 'The application token to be used'
+    option :space, nil, 'The default space to be used'
 
     def initialize(app, options_hash={}, &block)
       super
@@ -13,8 +14,9 @@ module MiddlemanHeadless
     end
 
     helpers do
-      def headless(space)
-        Interface.new(extensions[:headless].options, space)
+      def headless(space=nil)
+        opts = extensions[:headless].options
+        Interface.new(opts, space || opts.space)
       end
     end
   end

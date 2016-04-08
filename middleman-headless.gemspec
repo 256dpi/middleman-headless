@@ -5,10 +5,10 @@ Gem::Specification.new do |s|
   s.name        = 'middleman-headless'
   s.version     = '0.1.0'
   s.platform    = Gem::Platform::RUBY
-  # s.authors     = ['Your Name']
-  # s.email       = ['email@example.com']
+  s.authors     = ['Joël Gähwiler']
+  s.email       = ['joel@twomanyprojects.com']
   # s.homepage    = 'http://example.com'
-  # s.summary     = %q{A short summary of your extension}
+  s.summary     = %q{Todo}
   # s.description = %q{A longer description of your extension}
 
   s.files         = `git ls-files`.split("\n")

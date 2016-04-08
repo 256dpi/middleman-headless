@@ -1,29 +1,21 @@
 require 'middleman-core'
 
-class Headless < ::Middleman::Extension
-  option :my_option, 'default', 'An example option'
+require 'middleman-headless/interface'
 
-  def initialize(app, options_hash={}, &block)
-    # Call super to build options from the options_hash
-    super
+module MiddlemanHeadless
+  class Extension < ::Middleman::Extension
+    option :address, 'http://0.0.0.0:3000', 'The Headless address'
+    option :token, nil, 'The application token to be used'
 
-    # Require libraries only when activated
-    # require 'necessary/library'
+    def initialize(app, options_hash={}, &block)
+      super
+      require 'faraday'
+    end
 
-    # set up your extension
-    # puts options.my_option
+    helpers do
+      def headless(space)
+        Interface.new(extensions[:headless].options, space)
+      end
+    end
   end
-
-  def after_configuration
-    # Do something
-  end
-
-  # A Sitemap Manipulator
-  # def manipulate_resource_list(resources)
-  # end
-
-  # helpers do
-  #   def a_helper
-  #   end
-  # end
 end

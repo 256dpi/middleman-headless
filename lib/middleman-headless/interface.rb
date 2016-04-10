@@ -1,6 +1,58 @@
 require 'active_support/core_ext/hash/indifferent_access'
 
 module MiddlemanHeadless
+  class Interface
+    def initialize(options, space)
+      @cache = {}
+      @conn = Faraday.new(url: "#{options.address}/delivery/#{space}") do |config|
+        config.headers['Authorization'] = "Bearer #{options.token}"
+        config.response :logger if options.log
+        config.adapter Faraday.default_adapter
+      end
+    end
+
+    def space
+      @space ||= Space.new(get('').with_indifferent_access)
+    end
+
+    def entries(content_type)
+      content_type = content_type[:slug] if content_type.is_a?(Hash)
+      @cache[content_type.to_sym] ||= get(content_type).map do |item|
+        Entry.new(item.with_indifferent_access)
+      end
+    end
+
+    def method_missing(key)
+      entries(key.to_s)
+    end
+
+    protected
+
+    def get(path)
+      JSON.parse(@conn.get(path).body)
+    end
+  end
+
+  class Item
+    def initialize(data)
+      @data = data
+    end
+
+    def method_missing(key)
+      @data[key]
+    end
+  end
+
+  class Space < Item
+    def content_types
+      @data[:content_types].map{|item| Item.new(item) }
+    end
+
+    def languages
+      @data[:languages].map{|item| Item.new(item) }
+    end
+  end
+
   class Entry
     def initialize(data)
       @data = data
@@ -50,40 +102,6 @@ module MiddlemanHeadless
 
     def method_missing(key)
       field(key)
-    end
-  end
-
-  class Interface
-    def initialize(options, space)
-      @space = space
-
-      @conn = Faraday.new(url: "#{options.address}/delivery/#{space}") do |config|
-        config.headers['Authorization'] = "Bearer #{options.token}"
-        config.response :logger if options.log
-        config.adapter Faraday.default_adapter
-      end
-    end
-
-    def space
-      get('')
-    end
-
-    def entries(content_type)
-      get(content_type.is_a?(Hash) ? content_type[:slug] : content_type).map do |item|
-        Entry.new(item)
-      end
-    end
-
-    def method_missing(key)
-      entries(key.to_s)
-    end
-
-    protected
-
-    def get(path)
-      JSON.parse(@conn.get(path).body).map do |item|
-        item.with_indifferent_access
-      end
     end
   end
 end

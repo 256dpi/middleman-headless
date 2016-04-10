@@ -21,6 +21,10 @@ module MiddlemanHeadless
     def field(key)
       version(I18n.locale).field(key)
     end
+
+    def method_missing(key)
+      field(key)
+    end
   end
 
   class Version
@@ -43,6 +47,10 @@ module MiddlemanHeadless
     def published_at
       @data[:published_at]
     end
+
+    def method_missing(key)
+      field(key)
+    end
   end
 
   class Interface
@@ -64,6 +72,10 @@ module MiddlemanHeadless
       get(content_type.is_a?(Hash) ? content_type[:slug] : content_type).map do |item|
         Entry.new(item)
       end
+    end
+
+    def method_missing(key)
+      entries(key.to_s)
     end
 
     protected

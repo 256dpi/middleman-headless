@@ -7,17 +7,17 @@ module MiddlemanHeadless
 
       @conn = Faraday.new(url: "#{options.address}/delivery/#{space}") do |config|
         config.headers['Authorization'] = "Bearer #{options.token}"
-        config.response :logger
+        config.response :logger if options.log
         config.adapter Faraday.default_adapter
       end
     end
 
-    def content_types
+    def space
       get('')
     end
 
     def entries(content_type)
-      get('entries/' + (content_type.is_a?(Hash) ? content_type[:slug] : content_type))
+      get(content_type.is_a?(Hash) ? content_type[:slug] : content_type)
     end
 
     protected

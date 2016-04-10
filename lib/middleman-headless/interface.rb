@@ -84,10 +84,6 @@ module MiddlemanHeadless
       @data = data
     end
 
-    def id
-      @data[:id]
-    end
-
     def field(key)
       @data[:fields][key]
     end

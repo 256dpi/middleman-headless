@@ -12,12 +12,27 @@ module MiddlemanHeadless
     def initialize(app, options_hash={}, &block)
       super
       require 'faraday'
+
+      @cache = {}
+
+      # clear cache before any request
+      app.before do
+        extensions[:headless].clear
+      end
+    end
+
+    def instance(space)
+      space ||= options.space
+      @cache[space.to_sym] ||= Interface.new(options, space)
+    end
+
+    def clear
+      @cache = {}
     end
 
     helpers do
       def headless(space=nil)
-        opts = extensions[:headless].options
-        Interface.new(opts, space || opts.space)
+        extensions[:headless].instance(space)
       end
     end
   end

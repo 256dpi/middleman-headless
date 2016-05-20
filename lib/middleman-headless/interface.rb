@@ -92,12 +92,12 @@ module MiddlemanHeadless
     end
 
     def asset(key)
-      Asset.new(field("#{key}_id"), @interface)
+      Asset.new(field(key), @interface)
     end
 
     def reference(key, type=nil)
       type = key if type.nil?
-      Reference.new(type, field("#{key}_id"), @interface)
+      Reference.new(type, field(key), @interface)
     end
 
     def method_missing(key)
@@ -136,10 +136,8 @@ module MiddlemanHeadless
 
     def url
       address = @interface.options.address
-      id = @id.split(':')[1]
       token = @interface.options.token
-
-      "#{address}/file/view/#{id}?token=#{token}"
+      "#{address}/file/view/#{@id}?token=#{token}"
     end
   end
 
@@ -151,7 +149,7 @@ module MiddlemanHeadless
     end
 
     def entry
-      @interface.entry(@type, @id.split(':')[1])
+      @interface.entry(@type, @id)
     end
 
     def method_missing(key)

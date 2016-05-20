@@ -22,6 +22,12 @@ module MiddlemanHeadless
       end
     end
 
+    def entry(content_type, id)
+      entries(content_type).find do |item|
+        item.id == id
+      end
+    end
+
     def method_missing(key)
       entries(key.to_s)
     end

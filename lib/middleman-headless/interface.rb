@@ -95,7 +95,8 @@ module MiddlemanHeadless
       Asset.new(field("#{key}_id"), @interface)
     end
 
-    def reference(type, key)
+    def reference(key, type=nil)
+      type = key if type.nil?
       Reference.new(type, field("#{key}_id"), @interface)
     end
 

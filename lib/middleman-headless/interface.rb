@@ -134,10 +134,9 @@ module MiddlemanHeadless
       @interface = interface
     end
 
-    def url
-      address = @interface.options.address
-      token = @interface.options.token
-      "#{address}/file/view/#{@id}?token=#{token}"
+    def url(options={})
+      options[:token] = @interface.options.token
+      "#{@interface.options.address}/file/view/#{@id}?#{options.to_query}"
     end
   end
 

@@ -95,9 +95,22 @@ module MiddlemanHeadless
       Asset.new(field(key), @interface)
     end
 
+    def assets(key)
+      field(key).map do |value|
+        Asset.new(value, @interface)
+      end
+    end
+
     def reference(key, type=nil)
       type = key if type.nil?
       Reference.new(type, field(key), @interface)
+    end
+
+    def references(key, type=nil)
+      type = key if type.nil?
+      field(key).map do |value|
+        Reference.new(type, value, @interface)
+      end
     end
 
     def method_missing(key)

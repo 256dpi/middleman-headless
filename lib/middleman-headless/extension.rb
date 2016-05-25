@@ -7,6 +7,7 @@ module MiddlemanHeadless
     option :address, 'http://0.0.0.0:3000', 'The Headless address'
     option :token, nil, "The access key's token that should be used"
     option :space, nil, 'The default space to be used'
+    option :preview, false, 'Enable preview mode'
     option :log, false, 'Enable logging to STDOUT'
 
     def initialize(app, options_hash={}, &block)

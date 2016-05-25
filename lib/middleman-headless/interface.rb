@@ -40,6 +40,7 @@ module MiddlemanHeadless
     protected
 
     def get(path)
+      path = path.to_s + '?preview=enabled' if @options.preview
       JSON.parse(@conn.get(path.to_s).body)
     end
   end

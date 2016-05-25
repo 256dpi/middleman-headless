@@ -14,9 +14,6 @@ module MiddlemanHeadless
       super
       require 'faraday'
 
-      @cache = {}
-
-      # clear cache before any request
       app.before do
         extensions[:headless].clear
       end

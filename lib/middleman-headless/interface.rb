@@ -165,8 +165,8 @@ module MiddlemanHeadless
       @interface.entry(@type, @id)
     end
 
-    def method_missing(key)
-      entry.send(key)
+    def method_missing(*args)
+      entry.send(*args)
     end
   end
 end

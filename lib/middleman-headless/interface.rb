@@ -9,7 +9,7 @@ module MiddlemanHeadless
       @space_slug = space_slug
       @cache = {}
 
-      @conn = Faraday.new(url: "#{@options.address}/delivery/#{@space_slug}") do |config|
+      @conn = Faraday.new(url: "#{@options.address}/content/#{@space_slug}") do |config|
         config.headers['Authorization'] = "Bearer #{@options.token}"
         config.response :logger if @options.log
         config.adapter Faraday.default_adapter

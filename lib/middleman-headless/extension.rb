@@ -4,7 +4,7 @@ require 'middleman-headless/interface'
 
 module MiddlemanHeadless
   class Extension < ::Middleman::Extension
-    option :address, 'http://0.0.0.0:3000', 'The Headless address'
+    option :address, 'http://0.0.0.0:4000', 'The Headless address'
     option :token, nil, "The access key's token that should be used"
     option :space, nil, 'The default space to be used'
     option :preview, false, 'Enable preview mode'

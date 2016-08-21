@@ -20,5 +20,5 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency('middleman-core', ['>= 4.1.6'])
   
   # Additional dependencies
-  s.add_runtime_dependency('faraday', ['>= 0.9.2'])
+  s.add_runtime_dependency('oauth2', ['>= 1.2.0'])
 end

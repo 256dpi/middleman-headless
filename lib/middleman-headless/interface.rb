@@ -6,11 +6,10 @@ require 'active_support/core_ext/hash/indifferent_access'
 module MiddlemanHeadless
   class Interface
     attr_reader :options
-    attr_reader :space_slug
+    attr_accessor :builder
 
-    def initialize(options, space_slug, extension)
+    def initialize(options, extension)
       @options = options
-      @space_slug = space_slug
       @extension = extension
       @cache = {}
 
@@ -28,12 +27,12 @@ module MiddlemanHeadless
     end
 
     def space
-      @space ||= Space.new(get("space/#{@space_slug}").with_indifferent_access, self)
+      @space ||= Space.new(get("space/#{@options.space}").with_indifferent_access, self)
     end
 
     def entries(content_type)
       content_type = content_type[:slug] if content_type.is_a?(Hash)
-      path = "entries/#{@space_slug}/#{content_type}"
+      path = "entries/#{@options.space}/#{content_type}"
       @cache[content_type.to_sym] ||= get(path).map do |item|
         Entry.new(item.with_indifferent_access, self)
       end
@@ -55,7 +54,7 @@ module MiddlemanHeadless
 
     def link_asset(id, urlopts)
       urlopts[:access_token] = token
-      image_url = "#{options.address}/content/file/#{space_slug}/#{id}?#{urlopts.to_query}"
+      image_url = "#{options.address}/content/file/#{@options.space}/#{id}?#{urlopts.to_query}"
 
       return image_url
 
@@ -70,12 +69,19 @@ module MiddlemanHeadless
       #   file_name += Rack::Mime::MIME_TYPES.invert[f.content_type]
       #   file = File.join(absolute_dir, file_name)
       #
-      #   puts "write file #{file}"
-      #
       #   File.open(file, 'wb') do |ff|
       #     ff.puts f.read
       #   end
+      #
+      #   puts "  downloaded  build/images/#{file_name}"
       # end
+      #
+      # # prevent file from being deleted by middleman
+      # @builder.instance_variable_get(:@to_clean).reject! do |item|
+      #   item.to_s == "build/images/#{file_name}"
+      # end
+      #
+      # puts @builder.instance_variable_get(:@to_clean).inspect
       #
       # file_name
     end

@@ -16,22 +16,25 @@ module MiddlemanHeadless
       require 'oauth2'
 
       app.before do
-        extensions[:headless].clear
+        extensions[:headless].clear unless app.build?
+      end
+
+      app.before_build do |builder|
+        extensions[:headless].interface.builder = builder
       end
     end
 
-    def instance
-      slug = options.space.to_sym
-      @cache[slug] ||= Interface.new(options, slug, self)
+    def interface
+      @cache ||= Interface.new(options, self)
     end
 
     def clear
-      @cache = {}
+      @cache = nil
     end
 
     helpers do
       def headless
-        extensions[:headless].instance
+        extensions[:headless].interface
       end
     end
   end

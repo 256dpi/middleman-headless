@@ -22,7 +22,7 @@ module MiddlemanHeadless
 
     def instance
       slug = options.space.to_sym
-      @cache[slug] ||= Interface.new(options, slug)
+      @cache[slug] ||= Interface.new(options, slug, self)
     end
 
     def clear

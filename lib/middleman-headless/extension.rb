@@ -18,18 +18,14 @@ module MiddlemanHeadless
       app.before do
         extensions[:headless].clear unless app.build?
       end
-
-      app.before_build do |builder|
-        extensions[:headless].interface.builder = builder
-      end
     end
 
     def interface
-      @cache ||= Interface.new(options, self)
+      @interface ||= Interface.new(options)
     end
 
     def clear
-      @cache = nil
+      @interface = nil
     end
 
     helpers do

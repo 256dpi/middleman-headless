@@ -1,16 +1,11 @@
-require 'rack/mime'
-require 'open-uri'
-require 'fileutils'
 require 'active_support/core_ext/hash/indifferent_access'
 
 module MiddlemanHeadless
   class Interface
     attr_reader :options
-    attr_accessor :builder
 
-    def initialize(options, extension)
+    def initialize(options)
       @options = options
-      @extension = extension
       @cache = {}
 
       @client = OAuth2::Client.new(
@@ -46,44 +41,6 @@ module MiddlemanHeadless
 
     def token
       @access_token.token
-    end
-
-    def app
-      @extension.app
-    end
-
-    def link_asset(id, urlopts)
-      urlopts[:access_token] = token
-      image_url = "#{options.address}/content/file/#{@options.space}/#{id}?#{urlopts.to_query}"
-
-      return image_url
-
-      # return image_url unless app.build?
-      #
-      # absolute_dir = File.join(app.root, app.config[:build_dir], app.config[:images_dir])
-      # FileUtils.mkdir_p absolute_dir
-      #
-      # file_name = id
-      #
-      # open(image_url) do |f|
-      #   file_name += Rack::Mime::MIME_TYPES.invert[f.content_type]
-      #   file = File.join(absolute_dir, file_name)
-      #
-      #   File.open(file, 'wb') do |ff|
-      #     ff.puts f.read
-      #   end
-      #
-      #   puts "  downloaded  build/images/#{file_name}"
-      # end
-      #
-      # # prevent file from being deleted by middleman
-      # @builder.instance_variable_get(:@to_clean).reject! do |item|
-      #   item.to_s == "build/images/#{file_name}"
-      # end
-      #
-      # puts @builder.instance_variable_get(:@to_clean).inspect
-      #
-      # file_name
     end
 
     def method_missing(key)
@@ -203,7 +160,9 @@ module MiddlemanHeadless
     end
 
     def url(options={})
-      return @interface.link_asset(@id, options)
+      # TODO: Fetch asset using somekind of a public url.
+      urlopts[:access_token] = token
+      return "#{options.address}/content/file/#{@options.space}/#{id}?#{urlopts.to_query}"
     end
   end
 

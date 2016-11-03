@@ -14,7 +14,7 @@ module MiddlemanHeadless
         @options.app_key,
         @options.app_secret,
         site: @options.address,
-        token_url: '/oauth2/token',
+        token_url: '/auth/token',
         ssl: {
           verify: @options.verify
         }

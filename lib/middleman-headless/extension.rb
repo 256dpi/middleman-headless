@@ -8,7 +8,7 @@ module MiddlemanHeadless
     option :app_key, nil, 'The applications key used for authentication'
     option :app_secret, nil, 'The applications secret used for authentication"'
     option :verify, true, 'Certificates are verified by default'
-    option :space, nil, 'The default space to be used'
+    option :space, nil, 'The space to be used'
     option :preview, false, 'Enable preview mode'
 
     def initialize(app, options_hash={}, &block)
@@ -20,9 +20,9 @@ module MiddlemanHeadless
       end
     end
 
-    def instance(space)
-      space ||= options.space
-      @cache[space.to_sym] ||= Interface.new(options, space)
+    def instance
+      slug = options.space.to_sym
+      @cache[slug] ||= Interface.new(options, slug)
     end
 
     def clear
@@ -30,8 +30,8 @@ module MiddlemanHeadless
     end
 
     helpers do
-      def headless(space=nil)
-        extensions[:headless].instance(space)
+      def headless
+        extensions[:headless].instance
       end
     end
   end

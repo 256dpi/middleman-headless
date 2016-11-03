@@ -6,7 +6,8 @@ module MiddlemanHeadless
 
     def initialize(options)
       @options = options
-      @cache = {}
+      @entries_cache = {}
+      @asset_cache = {}
 
       @client = OAuth2::Client.new(
         @options.app_key,
@@ -28,7 +29,7 @@ module MiddlemanHeadless
     def entries(content_type)
       content_type = content_type[:slug] if content_type.is_a?(Hash)
       path = "entries/#{@options.space}/#{content_type}"
-      @cache[content_type.to_sym] ||= get(path).map do |item|
+      @entries_cache[content_type.to_sym] ||= get(path).map do |item|
         Entry.new(item.with_indifferent_access, self)
       end
     end
@@ -37,6 +38,11 @@ module MiddlemanHeadless
       entries(content_type).find do |item|
         item.id == id
       end
+    end
+
+    def asset(id)
+      path = "asset/#{@options.space}/#{id}"
+      @asset_cache[id.to_sym] ||= Asset.new(get(path).with_indifferent_access, self)
     end
 
     def token
@@ -104,12 +110,12 @@ module MiddlemanHeadless
     end
 
     def asset(key)
-      Asset.new(field(key), @interface)
+      @interface.asset(field(key))
     end
 
     def assets(key)
       field(key).map do |value|
-        Asset.new(value, @interface)
+        @interface.asset(value)
       end
     end
 
@@ -154,15 +160,21 @@ module MiddlemanHeadless
   end
 
   class Asset
-    def initialize(id, interface)
-      @id = id
+    def initialize(data, interface)
+      @data = data
       @interface = interface
     end
 
+    def key
+      @data[:key]
+    end
+
+    def name
+      @data[:name]
+    end
+
     def url(options={})
-      # TODO: Fetch asset using somekind of a public url.
-      urlopts[:access_token] = token
-      return "#{options.address}/content/file/#{@options.space}/#{id}?#{urlopts.to_query}"
+      "#{@interface.options.address}/content/file/#{key}?#{options.to_query}"
     end
   end
 

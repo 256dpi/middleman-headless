@@ -49,32 +49,35 @@ module MiddlemanHeadless
       @access_token.token
     end
 
-    def build?
-      @extension.app.build?
+    def app
+      @extension.app
     end
 
-    def link_image(id, image_options)
-      image_options[:access_token] = token
-      image_url = "#{options.address}/content/file/#{space_slug}/#{id}?#{image_options.to_query}"
+    def link_asset(id, urlopts)
+      urlopts[:access_token] = token
+      image_url = "#{options.address}/content/file/#{space_slug}/#{id}?#{urlopts.to_query}"
 
-      return image_url unless build?
+      return image_url
 
-      dir = File.join(@extension.app.root, @extension.app.config[:build_dir], @extension.app.config[:images_dir])
-      FileUtils.mkdir_p dir
-
-      file_name = ''
-
-      open(image_url) do |f|
-        ext = Rack::Mime::MIME_TYPES.invert[f.content_type]
-        file_name = id + ext
-        file = File.join(dir, file_name)
-
-        File.open(file, 'wb') do |ff|
-          ff.puts f.read
-        end
-      end
-
-      file_name
+      # return image_url unless app.build?
+      #
+      # absolute_dir = File.join(app.root, app.config[:build_dir], app.config[:images_dir])
+      # FileUtils.mkdir_p absolute_dir
+      #
+      # file_name = id
+      #
+      # open(image_url) do |f|
+      #   file_name += Rack::Mime::MIME_TYPES.invert[f.content_type]
+      #   file = File.join(absolute_dir, file_name)
+      #
+      #   puts "write file #{file}"
+      #
+      #   File.open(file, 'wb') do |ff|
+      #     ff.puts f.read
+      #   end
+      # end
+      #
+      # file_name
     end
 
     def method_missing(key)
@@ -194,7 +197,7 @@ module MiddlemanHeadless
     end
 
     def url(options={})
-      return @interface.link_image(@id, options)
+      return @interface.link_asset(@id, options)
     end
   end
 

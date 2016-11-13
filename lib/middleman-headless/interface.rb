@@ -174,7 +174,8 @@ module MiddlemanHeadless
     end
 
     def url(options={})
-      "#{@interface.options.address}/content/file/#{key}?#{options.to_query}"
+      opts = "?#{options.to_query}" if options.length > 0
+      "#{@interface.options.address}/content/file/#{key}#{opts}"
     end
   end
 

@@ -4,25 +4,32 @@ module MiddlemanHeadless
   class Interface
     attr_reader :options
 
-    def initialize(options, space_slug)
+    def initialize(options)
       @options = options
-      @space_slug = space_slug
-      @cache = {}
+      @entries_cache = {}
+      @asset_cache = {}
 
-      @conn = Faraday.new(url: "#{@options.address}/content/#{@space_slug}") do |config|
-        config.headers['Authorization'] = "Bearer #{@options.token}"
-        config.response :logger if @options.log
-        config.adapter Faraday.default_adapter
-      end
+      @client = OAuth2::Client.new(
+        @options.app_key,
+        @options.app_secret,
+        site: @options.address,
+        token_url: '/auth/token',
+        ssl: {
+          verify: @options.verify
+        }
+      )
+
+      @access_token = @client.client_credentials.get_token scope: ''
     end
 
     def space
-      @space ||= Space.new(get('').with_indifferent_access, self)
+      @space ||= Space.new(get("space/#{@options.space}").with_indifferent_access, self)
     end
 
     def entries(content_type)
       content_type = content_type[:slug] if content_type.is_a?(Hash)
-      @cache[content_type.to_sym] ||= get(content_type).map do |item|
+      path = "entries/#{@options.space}/#{content_type}"
+      @entries_cache[content_type.to_sym] ||= get(path).map do |item|
         Entry.new(item.with_indifferent_access, self)
       end
     end
@@ -33,6 +40,15 @@ module MiddlemanHeadless
       end
     end
 
+    def asset(id)
+      path = "asset/#{@options.space}/#{id}"
+      @asset_cache[id.to_sym] ||= Asset.new(get(path).with_indifferent_access, self)
+    end
+
+    def token
+      @access_token.token
+    end
+
     def method_missing(key)
       entries(key.to_s)
     end
@@ -40,8 +56,9 @@ module MiddlemanHeadless
     protected
 
     def get(path)
-      path = path.to_s + '?preview=enabled' if @options.preview
-      JSON.parse(@conn.get(path.to_s).body)
+      path = "/content/#{path.to_s}"
+      path = "#{path}?preview=enabled" if @options.preview
+      JSON.parse(@access_token.get(path).body)
     end
   end
 
@@ -93,12 +110,12 @@ module MiddlemanHeadless
     end
 
     def asset(key)
-      Asset.new(field(key), @interface)
+      @interface.asset(field(key))
     end
 
     def assets(key)
       field(key).map do |value|
-        Asset.new(value, @interface)
+        @interface.asset(value)
       end
     end
 
@@ -143,14 +160,21 @@ module MiddlemanHeadless
   end
 
   class Asset
-    def initialize(id, interface)
-      @id = id
+    def initialize(data, interface)
+      @data = data
       @interface = interface
     end
 
+    def key
+      @data[:key]
+    end
+
+    def name
+      @data[:name]
+    end
+
     def url(options={})
-      options[:token] = @interface.options.token
-      "#{@interface.options.address}/file/view/#{@id}?#{options.to_query}"
+      "#{@interface.options.address}/content/file/#{key}?#{options.to_query}"
     end
   end
 

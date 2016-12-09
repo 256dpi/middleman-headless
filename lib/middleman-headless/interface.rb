@@ -102,11 +102,14 @@ module MiddlemanHeadless
     end
 
     def version(key)
+      return nil if @data[:versions][key].nil?
       Version.new(@data[:versions][key], @interface)
     end
 
     def field(key)
-      version(I18n.locale).field(key)
+      v = version(I18n.locale)
+      return nil if v.nil?
+      v.field(key)
     end
 
     def asset(key)

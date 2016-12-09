@@ -194,6 +194,8 @@ module MiddlemanHeadless
     end
 
     def method_missing(*args)
+      e = entry
+      return nil if e.nil?
       entry.send(*args)
     end
   end

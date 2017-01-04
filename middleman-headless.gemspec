@@ -3,12 +3,12 @@ $:.push File.expand_path('../lib', __FILE__)
 
 Gem::Specification.new do |s|
   s.name        = 'middleman-headless'
-  s.version     = '0.2.0'
+  s.version     = '0.3.0'
   s.platform    = Gem::Platform::RUBY
   s.authors     = ['Joël Gähwiler']
   s.email       = ['joel@twomanyprojects.com']
   # s.homepage    = 'http://example.com'
-  s.summary     = %q{Todo}
+  s.summary     = %q{Middleman extension to load content from the Headless Content Management System.}
   # s.description = %q{A longer description of your extension}
 
   s.files         = `git ls-files`.split("\n")

@@ -10,6 +10,7 @@ module MiddlemanHeadless
     option :verify, true, 'Certificates are verified by default'
     option :space, nil, 'The space to be used'
     option :preview, false, 'Enable preview mode'
+    option :cache, false, 'Enable caching. You need to restart the middleman to get updated content.'
 
     def initialize(app, options_hash={}, &block)
       super
@@ -25,7 +26,7 @@ module MiddlemanHeadless
     end
 
     def clear
-      @interface = nil
+      @interface = nil unless options.cache
     end
 
     helpers do

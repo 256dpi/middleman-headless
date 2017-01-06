@@ -41,7 +41,7 @@ module MiddlemanHeadless
     end
 
     def asset(id)
-      return nil if id.nil?
+      return nil if id.blank?
       path = "asset/#{@options.space}/#{id}"
       @asset_cache[id.to_sym] ||= Asset.new(get(path).with_indifferent_access, self)
     end

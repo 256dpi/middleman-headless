@@ -118,19 +118,28 @@ module MiddlemanHeadless
     end
 
     def assets(key)
-      field(key).map do |value|
+      assets = field(key)
+      return [] if assets.nil?
+
+      assets.map do |value|
         @interface.asset(value)
       end
     end
 
     def reference(key, type=nil)
       type = key if type.nil?
-      Reference.new(type, field(key), @interface)
+      ref = field(key)
+      return nil if ref.nil?
+
+      Reference.new(type, ref, @interface)
     end
 
     def references(key, type=nil)
       type = key if type.nil?
-      field(key).map do |value|
+      refs = field(key)
+      return [] if refs.nil?
+
+      refs.map do |value|
         Reference.new(type, value, @interface)
       end
     end

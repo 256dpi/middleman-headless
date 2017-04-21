@@ -3,7 +3,7 @@ $:.push File.expand_path('../lib', __FILE__)
 
 Gem::Specification.new do |s|
   s.name        = 'middleman-headless'
-  s.version     = '0.3.4'
+  s.version     = '0.3.5'
   s.licenses    = ['MIT']
   s.platform    = Gem::Platform::RUBY
   s.authors     = ['Joël Gähwiler']
@@ -17,7 +17,5 @@ Gem::Specification.new do |s|
   s.require_paths = ['lib']
 
   s.add_runtime_dependency('middleman-core', ['~> 4.1'])
-  s.add_runtime_dependency('oauth2', ['~> 1.2.0'])
-
-  # TODO: Gem oauth2@1.3.0 seems to be buggy: https://github.com/intridea/oauth2/issues/285.
+  s.add_runtime_dependency('oauth2')
 end

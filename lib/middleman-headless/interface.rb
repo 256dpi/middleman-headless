@@ -14,6 +14,7 @@ module MiddlemanHeadless
         @options.app_secret,
         site: @options.address,
         token_url: '/auth/token',
+        auth_scheme: :basic_auth,
         ssl: {
           verify: @options.verify
         }

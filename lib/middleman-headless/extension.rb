@@ -12,6 +12,9 @@ module MiddlemanHeadless
     option :preview, false, 'Enable preview mode'
     option :cache, false, 'Enable caching. You need to restart the middleman to get updated content.'
 
+    expose_to_config :headless
+    expose_to_template :headless
+
     def initialize(app, options_hash={}, &block)
       super
       require 'oauth2'
@@ -21,18 +24,12 @@ module MiddlemanHeadless
       end
     end
 
-    def interface
+    def headless
       @interface ||= Interface.new(options)
     end
 
     def clear
       @interface = nil unless options.cache
-    end
-
-    helpers do
-      def headless
-        extensions[:headless].interface
-      end
     end
   end
 end

@@ -25,6 +25,10 @@ module MiddlemanHeadless
     end
 
     def headless
+      if options.app_key.blank? or options.app_secret.blank? or options.address.blank?
+        raise 'missing app_key, app_secret or address'
+      end
+
       @interface ||= Interface.new(options)
     end
 

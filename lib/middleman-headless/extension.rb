@@ -13,6 +13,7 @@ module MiddlemanHeadless
     option :cache, false, 'Enable caching. You need to restart the middleman to get updated content.'
     option :download_assets, false, 'Download assets and replace links during a build.'
     option :assets_dir, 'assets/', 'The directory to place downloaded assets in.'
+    option :process_exts, %w(.html .json), 'The extension of files to process for downloadable assets.'
 
     expose_to_config :headless
     expose_to_template :headless
@@ -46,8 +47,9 @@ module MiddlemanHeadless
       downloads = {}
       builder.thor.say 'Downloading headless assets...'
 
-      # TODO: Match file extensions?
       Middleman::Util.all_files_under(app.config[:build_dir]).each do |file|
+        return unless options[:process_exts].include?(File.extname(file))
+
         content = File.binread(file.expand_path)
 
         content.gsub! /hldl:\/\/([A-z0-9=]+)\// do

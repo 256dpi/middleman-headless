@@ -12,7 +12,7 @@ module MiddlemanHeadless
     option :preview, false, 'Enable preview mode'
     option :cache, false, 'Enable caching. You need to restart the middleman to get updated content.'
     option :download_assets, false, 'Download assets and replace links during a build.'
-    option :assets_dir, 'assets/', 'The directory to place downloaded assets in.'
+    option :assets_dir, 'assets', 'The directory to place downloaded assets in.'
     option :process_exts, %w(.html .json), 'The extension of files to process for downloadable assets.'
 
     expose_to_config :headless

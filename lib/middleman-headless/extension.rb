@@ -14,6 +14,7 @@ module MiddlemanHeadless
     option :download_assets, false, 'Download assets and replace links during a build.'
     option :assets_dir, 'assets', 'The directory to place downloaded assets in.'
     option :process_exts, %w(.html .json), 'The extension of files to process for downloadable assets.'
+    option :assets_hash_length, 8, 'The length of the appended hash key to the asset filenames.'
 
     expose_to_config :headless
     expose_to_template :headless
@@ -54,7 +55,8 @@ module MiddlemanHeadless
 
         content.gsub! /hldl:\/\/([A-z0-9=]+)\// do
           data = JSON.parse(Base64.urlsafe_decode64($1))
-          id = "#{Digest::SHA1.hexdigest(data['addr'])}.#{data['ext']}"
+          hash = Digest::SHA1.hexdigest(data['addr'])[0..options[:assets_hash_length]]
+          id = "#{data['name']}-#{hash}.#{data['ext']}"
           downloads[id] = data['addr']
           "/#{options[:assets_dir]}/#{id}"
         end

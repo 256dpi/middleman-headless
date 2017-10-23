@@ -201,7 +201,7 @@ module MiddlemanHeadless
       addr = "#{@interface.options.address}/content/file/#{key}#{opts}"
 
       if @interface.options[:download_assets]
-        data = { addr: addr, ext: extension }
+        data = { addr: addr, ext: extension, name: name.parameterize }
         "hldl://#{Base64.urlsafe_encode64(JSON.generate(data))}/"
       else
         addr

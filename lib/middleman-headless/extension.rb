@@ -48,7 +48,7 @@ module MiddlemanHeadless
       builder.thor.say 'Downloading headless assets...'
 
       Middleman::Util.all_files_under(app.config[:build_dir]).each do |file|
-        return unless options[:process_exts].include?(File.extname(file))
+        next unless options[:process_exts].include?(File.extname(file))
 
         content = File.binread(file.expand_path)
 
@@ -56,7 +56,7 @@ module MiddlemanHeadless
           data = JSON.parse(Base64.urlsafe_decode64($1))
           id = "#{Digest::SHA1.hexdigest(data['addr'])}.#{data['ext']}"
           downloads[id] = data['addr']
-          Pathname(options[:assets_dir]).join(id).to_s
+          "/#{options[:assets_dir]}/#{id}"
         end
 
         File.open(file.expand_path, 'wb') { |f| f.write(content) }

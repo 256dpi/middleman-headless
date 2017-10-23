@@ -1,3 +1,4 @@
+require 'mime/types'
 require 'active_support/core_ext/hash/indifferent_access'
 
 module MiddlemanHeadless
@@ -187,9 +188,24 @@ module MiddlemanHeadless
       @data[:name]
     end
 
+    def content_type
+      @data[:content_type]
+    end
+
+    def extension
+      MIME::Types[content_type].first.preferred_extension
+    end
+
     def url(options={})
       opts = options.length > 0 ? "?#{options.to_query}" : ''
-      "#{@interface.options.address}/content/file/#{key}#{opts}"
+      addr = "#{@interface.options.address}/content/file/#{key}#{opts}"
+
+      if @interface.options[:download_assets]
+        data = { addr: addr, ext: extension }
+        "hldl://#{Base64.urlsafe_encode64(JSON.generate(data))}/"
+      else
+        addr
+      end
     end
   end
 

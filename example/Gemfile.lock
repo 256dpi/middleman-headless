@@ -1,7 +1,7 @@
 PATH
   remote: ../
   specs:
-    middleman-headless (0.3.5)
+    middleman-headless (0.4.1)
       middleman-core (~> 4.1)
       mime-types (~> 3.1)
       oauth2 (~> 1.4)

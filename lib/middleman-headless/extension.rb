@@ -33,7 +33,7 @@ module MiddlemanHeadless
         raise 'missing app_key, app_secret or address'
       end
 
-      @interface ||= Interface.new(options)
+      @interface ||= Interface.new(options, app.build?)
     end
 
     def clear

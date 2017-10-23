@@ -3,10 +3,12 @@ require 'active_support/core_ext/hash/indifferent_access'
 
 module MiddlemanHeadless
   class Interface
-    attr_reader :options
+    attr_reader :options, :build
 
-    def initialize(options)
+    def initialize(options, build)
       @options = options
+      @build = build
+
       @entries_cache = {}
       @asset_cache = {}
 
@@ -200,7 +202,7 @@ module MiddlemanHeadless
       opts = options.length > 0 ? "?#{options.to_query}" : ''
       addr = "#{@interface.options.address}/content/file/#{key}#{opts}"
 
-      if @interface.options[:download_assets]
+      if @interface.options[:download_assets] && @interface.build
         data = { addr: addr, ext: extension, name: name.parameterize }
         "hldl://#{Base64.urlsafe_encode64(JSON.generate(data))}/"
       else

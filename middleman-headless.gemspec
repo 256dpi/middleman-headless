@@ -17,5 +17,6 @@ Gem::Specification.new do |s|
 
   s.add_runtime_dependency('middleman-core', ['~> 4.1'])
   s.add_runtime_dependency('mime-types', ['~> 3.1'])
+  s.add_runtime_dependency('nokogiri', ['~> 1.10'])
   s.add_runtime_dependency('oauth2', ['~> 1.4'])
 end

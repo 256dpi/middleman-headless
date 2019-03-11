@@ -131,6 +131,10 @@ module MiddlemanHeadless
       version(I18n.locale)&.references(key, type)
     end
 
+    def render(key, width)
+      version(I18n.locale)&.render(key, width)
+    end
+
     def method_missing(key)
       field(key)
     end
@@ -183,6 +187,19 @@ module MiddlemanHeadless
       refs.map do |value|
         Reference.new(type, value, @interface)
       end
+    end
+
+    def render(key, width)
+      doc = field(key)
+      return '' if doc.nil?
+
+      html = Nokogiri::HTML::DocumentFragment.parse(doc)
+
+      html.css('img').each do |img|
+        img['src'] += "?width=#{width}"
+      end
+
+      html.to_html
     end
 
     def method_missing(key)

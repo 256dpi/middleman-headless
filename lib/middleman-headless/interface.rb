@@ -32,7 +32,7 @@ module MiddlemanHeadless
 
     def entries(content_type)
       content_type = content_type[:slug] if content_type.is_a?(Hash)
-      path = "entries/#{@options.space}/#{content_type}"
+      path = "entries/#{@options.space}/#{content_type}?render-documents=true"
       @entries_cache[content_type.to_sym] ||= get(path).map do |item|
         Entry.new(item.with_indifferent_access, self)
       end

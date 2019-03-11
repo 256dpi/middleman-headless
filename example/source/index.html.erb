@@ -18,9 +18,9 @@
 
 <% headless.posts.each do |post| %>
   <h2><%= post.title %></h2>
-  <p><%= image_tag post.asset(:image).url(width: 400), alt: post.asset(:image).name %></p>
   <p><%= post.body %></p>
-  <p>Written by <%= post.reference(:author).name %></p>
+  <p><%= image_tag post.asset(:image)&.url(width: 400), alt: post.asset(:image)&.name %></p>
+  <p>Written by <%= post.reference(:author)&.name %></p>
 <% end %>
 
 </body>

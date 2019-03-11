@@ -2,7 +2,7 @@ $LOAD_PATH.push File.expand_path('../lib', __FILE__)
 
 Gem::Specification.new do |s|
   s.name        = 'middleman-headless'
-  s.version     = '0.4.1'
+  s.version     = '0.5.0'
   s.licenses    = ['MIT']
   s.platform    = Gem::Platform::RUBY
   s.authors     = ['Joël Gähwiler']

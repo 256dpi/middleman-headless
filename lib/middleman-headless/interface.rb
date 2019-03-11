@@ -112,9 +112,46 @@ module MiddlemanHeadless
     end
 
     def field(key)
-      v = version(I18n.locale)
-      return nil if v.nil?
-      v.field(key)
+      version(I18n.locale)&.field(key)
+    end
+
+    def asset(key)
+      version(I18n.locale)&.asset(key)
+    end
+
+    def assets(key)
+      version(I18n.locale)&.assets(key)
+    end
+
+    def reference(key, type=nil)
+      version(I18n.locale)&.reference(key, type)
+    end
+
+    def references(key, type=nil)
+      version(I18n.locale)&.references(key, type)
+    end
+
+    def method_missing(key)
+      field(key)
+    end
+  end
+
+  class Version
+    def initialize(data, interface)
+      @data = data
+      @interface = interface
+    end
+
+    def field(key)
+      @data[:fields][key]
+    end
+
+    def updated_at
+      @data[:updated_at]
+    end
+
+    def published_at
+      @data[:published_at]
     end
 
     def asset(key)
@@ -146,29 +183,6 @@ module MiddlemanHeadless
       refs.map do |value|
         Reference.new(type, value, @interface)
       end
-    end
-
-    def method_missing(key)
-      field(key)
-    end
-  end
-
-  class Version
-    def initialize(data, interface)
-      @data = data
-      @interface = interface
-    end
-
-    def field(key)
-      @data[:fields][key]
-    end
-
-    def updated_at
-      @data[:updated_at]
-    end
-
-    def published_at
-      @data[:published_at]
     end
 
     def method_missing(key)
@@ -223,9 +237,7 @@ module MiddlemanHeadless
     end
 
     def method_missing(*args)
-      e = entry
-      return nil if e.nil?
-      entry.send(*args)
+      entry&.send(*args)
     end
   end
 end

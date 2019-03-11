@@ -13,7 +13,7 @@ After that you need to create the following content types:
 ```
 post:
   title: string
-  body: string (multiline)
+  body: document
   image: asset
   author: reference (author)
 
